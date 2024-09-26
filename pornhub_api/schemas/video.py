@@ -1,7 +1,7 @@
 from typing import Any, List, Union
 from datetime import datetime
 
-from pydantic import Field, BaseModel, AnyHttpUrl, validator
+from pydantic import Field, BaseModel, AnyHttpUrl, validator, RootModel
 
 from pornhub_api.schemas.tag import Tag
 from pornhub_api.schemas.thumb import Thumb
@@ -38,11 +38,11 @@ class Video(BaseModel):
         return value
 
 
-class VideoResult(BaseModel):
-    __root__: Video = Field(..., alias="video")
+class VideoResult(RootModel[Any]):
+    root: Video = Field(..., alias="video")
 
     def __getattr__(self, item):
-        return getattr(self.__root__, item)
+        return getattr(self.root, item)
 
 
 class IsVideoActiveResult(BaseModel):
@@ -50,7 +50,7 @@ class IsVideoActiveResult(BaseModel):
         video_id: str
         is_active: str
 
-    __root__: _Active = Field(..., alias="active")
+    root: _Active = Field(..., alias="active")
 
     def __getattr__(self, item: Any) -> Any:
-        return getattr(self.__root__, item)
+        return getattr(self.root, item)
