@@ -10,7 +10,8 @@ __all__ = ("BaseBackend", "BaseAsyncBackend", "check_response", "BackendT")
 
 
 def _transform_response_into_model(data: Dict[str, Any], response_schema: Type[R]) -> R:
-    return response_schema(**data)
+    alias = response_schema.__fields__['root'].alias
+    return response_schema(root=data[alias])
 
 
 class BaseBackend:
