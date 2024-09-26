@@ -1,9 +1,9 @@
 from typing import List
-from pydantic import RootModel, field
+from pydantic import RootModel, Field
 from pornhub_api.schemas.video import Video
 
 class VideoSearchResult(RootModel[List[Video]]):
-    videos: List[Video] = field(..., alias="videos")
+    videos: List[Video] = Field(..., alias="videos")
 
     def __iter__(self):
         return iter(self.videos)
