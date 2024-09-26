@@ -1,7 +1,7 @@
 from typing import Any, List, Union
 from datetime import datetime
 
-from pydantic import Field, BaseModel, AnyHttpUrl, validator, RootModel
+from pydantic import field, BaseModel, AnyHttpUrl, field_validator, RootModel
 
 from pornhub_api.schemas.tag import Tag
 from pornhub_api.schemas.thumb import Thumb
@@ -31,26 +31,26 @@ class Video(BaseModel):
     categories: List[Category]
     pornstars: List[Pornstar]
 
-    @validator("rating")
-    def prettify_float(cls, value: Union[float, int]) -> Union[float, int]:  # type: ignore
+    @field_validator("rating")
+    def prettify_float(cls, value: Union[float, int]) -> Union[float, int]:
         if value == int(value):
             return int(value)
         return value
 
 
-class VideoResult(RootModel[Any]):
-    root: Video = Field(..., alias="video")
+class VideoResult(RootModel[Video]):
+    video: Video = field(..., alias="video")
 
     def __getattr__(self, item):
-        return getattr(self.root, item)
+        return getattr(self.video, item)
 
 
-class IsVideoActiveResult(BaseModel):
+class IsVideoActiveResult(RootModel[BaseModel]):
     class _Active(BaseModel):
         video_id: str
         is_active: str
 
-    root: _Active = Field(..., alias="active")
+    active: _Active = field(..., alias="active")
 
     def __getattr__(self, item: Any) -> Any:
-        return getattr(self.root, item)
+        return getattr(self.active, item)
