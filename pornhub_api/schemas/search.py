@@ -1,15 +1,19 @@
 from typing import List
-from pydantic import RootModel, Field
+
+from pydantic import BaseModel, RootModel
+from pydantic.fields import Field
+
 from pornhub_api.schemas.video import Video
 
+
 class VideoSearchResult(RootModel[List[Video]]):
-    videos: List[Video] = Field(..., alias="videos")
+    root: List[Video] = Field(..., alias="videos")
 
     def __iter__(self):
-        return iter(self.videos)
+        return iter(self.root)
 
     def __getitem__(self, item):
-        return self.videos[item]
+        return self.root[item]
 
     def size(self):
-        return len(self.videos)
+        return len(self.root)
